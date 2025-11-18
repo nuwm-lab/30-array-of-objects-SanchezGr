@@ -52,13 +52,7 @@ namespace Lab3
         {
             int m = ReadInt("Кількість прогресій: ", allowZero: false);
 
-            if (m <= 0)
-            {
-                Console.WriteLine("Немає прогресій для обробки.");
-                return;
-            }
-
-            var gp = new GeometricProgression[m];
+            GeometricProgression[] gp = new GeometricProgression[m];
 
             for (int i = 0; i < m; i++)
             {
@@ -98,12 +92,6 @@ namespace Lab3
             }
 
             Console.WriteLine($"\nНайбільший останній член у прогресії #{maxIndex + 1}: {maxValue}");
-
-            for (int i = 0; i < m; i++)
-            {
-                bool lastIsMax = gp[i].IsLastTermLargest();
-                Console.WriteLine($"Прогресія #{i + 1}: останній член {(lastIsMax ? "є" : "не є")} найбільшим у цій прогресії.");
-            }
         }
 
         private static int ReadInt(string prompt, bool allowZero)
@@ -119,7 +107,7 @@ namespace Lab3
 
                 Console.WriteLine(allowZero
                     ? "Помилка. Введіть число 0 або більше."
-                    : "Помилка. Введіть ціле число.");
+                    : "Помилка. Введіть додатне ціле число.");
             }
         }
 
@@ -134,6 +122,9 @@ namespace Lab3
                 Console.WriteLine("Помилка. Введіть число.");
             }
         }
+    }
+}
+
     }
 }
 
