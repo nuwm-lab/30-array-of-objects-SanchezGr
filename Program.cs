@@ -4,6 +4,7 @@ namespace Lab3
 {
     public class GeometricProgression
     {
+
         private readonly double _a0;
         private readonly double _q;
         private readonly int _n;
@@ -17,6 +18,15 @@ namespace Lab3
             _a0 = a0;
             _q  = q;
             _n  = n;
+
+        private double a0, q;
+        private int n;
+
+        public GeometricProgression(double a0, double q, int n)
+        {
+            this.a0 = a0;
+            this.q = q;
+            this.n = n;
         }
 
         public double LastTerm()
@@ -40,6 +50,12 @@ namespace Lab3
 
             const double eps = 1e-9;
             return Math.Abs(current - max) <= eps;
+            return a0 * Math.Pow(q, n - 1);
+        }
+
+        ~GeometricProgression()
+        {
+            Console.WriteLine("Об'єкт знищено");
         }
     }
 
@@ -55,6 +71,9 @@ namespace Lab3
                 return;
             }
 
+
+            Console.Write("Кількість прогресій: ");
+            int m = int.Parse(Console.ReadLine());
             GeometricProgression[] gp = new GeometricProgression[m];
 
             for (int i = 0; i < m; i++)
@@ -82,6 +101,22 @@ namespace Lab3
                 }
 
                 if (maxIndex == -1 || value > maxValue)
+                Console.Write("a0 = ");
+                double a0 = double.Parse(Console.ReadLine());
+                Console.Write("q = ");
+                double q = double.Parse(Console.ReadLine());
+                Console.Write("n = ");
+                int n = int.Parse(Console.ReadLine());
+                gp[i] = new GeometricProgression(a0, q, n);
+            }
+
+            int maxIndex = 0;
+            double maxValue = gp[0].LastTerm();
+
+            for (int i = 1; i < m; i++)
+            {
+                double value = gp[i].LastTerm();
+                if (value > maxValue)
                 {
                     maxValue = value;
                     maxIndex = i;
@@ -125,4 +160,14 @@ namespace Lab3
     }
 }
 
+
+
+            Console.WriteLine($"\nНайбільший останній член у прогресії #{maxIndex + 1}: {maxValue}");
+
+            gp = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+    }
+}
 
