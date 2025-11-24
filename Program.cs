@@ -1,27 +1,73 @@
-﻿using System;
+using System;
 
 namespace Lab3
 {
-    public class GeometricProgression
+    class TestClass
     {
-        private double a0, q;
-        private int n;
+        private byte[] bigArray = new byte[50 * 1024 * 1024];
+        public static bool Verbose = false;
+
+        public TestClass()
+        {
+            if (Verbose) Console.WriteLine("Створено об'єкт TestClass");
+        }
+
+        ~TestClass()
+        {
+            if (Verbose) Console.WriteLine("Спрацював деструктор TestClass");
+        }
+    }
+
+    class GeometricProgression
+    {
+        public double A0;
+        public double Q;
+        public int N;
 
         public GeometricProgression(double a0, double q, int n)
         {
-            this.a0 = a0;
-            this.q = q;
-            this.n = n;
-        }
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n), "Кількість членів повинна бути додатною.");
 
-        public double LastTerm()
-        {
-            return a0 * Math.Pow(q, n - 1);
+            A0 = a0;
+            Q = q;
+            N = n;
         }
 
         ~GeometricProgression()
         {
-            Console.WriteLine("Об'єкт знищено");
+            if (TestClass.Verbose) Console.WriteLine("Знищується об'єкт геометричної прогресії");
+        }
+
+        public double LastTerm()
+        {
+            return A0 * Math.Pow(Q, N - 1);
+        }
+
+        public override string ToString()
+        {
+            return $"a0 = {A0}, q = {Q}, n = {N}, an = {LastTerm()}";
+        }
+
+        public static int GetIndexOfMaxLast(GeometricProgression[] arr)
+        {
+            if (arr == null || arr.Length == 0)
+                throw new ArgumentException("Масив прогресій не може бути порожнім.");
+
+            int maxIndex = 0;
+            double maxLast = arr[0].LastTerm();
+
+            for (int i = 1; i < arr.Length; i++)
+            {
+                double currentLast = arr[i].LastTerm();
+                if (currentLast > maxLast)
+                {
+                    maxLast = currentLast;
+                    maxIndex = i;
+                }
+            }
+
+            return maxIndex;
         }
     }
 
@@ -29,41 +75,72 @@ namespace Lab3
     {
         static void Main()
         {
-            Console.Write("Кількість прогресій: ");
-            int m = int.Parse(Console.ReadLine());
+            int m = ReadInt("Кількість прогресій: ", false);
+
             GeometricProgression[] gp = new GeometricProgression[m];
 
             for (int i = 0; i < m; i++)
             {
                 Console.WriteLine($"\nПрогресія #{i + 1}");
-                Console.Write("a0 = ");
-                double a0 = double.Parse(Console.ReadLine());
-                Console.Write("q = ");
-                double q = double.Parse(Console.ReadLine());
-                Console.Write("n = ");
-                int n = int.Parse(Console.ReadLine());
+
+                double a0 = ReadDouble("a0 = ");
+                double q = ReadDouble("q = ");
+                int n = ReadInt("n = ", false);
+
                 gp[i] = new GeometricProgression(a0, q, n);
             }
 
-            int maxIndex = 0;
-            double maxValue = gp[0].LastTerm();
-
-            for (int i = 1; i < m; i++)
+            Console.WriteLine("\nСписок прогресій та їхніх останніх членів:");
+            for (int i = 0; i < gp.Length; i++)
             {
-                double value = gp[i].LastTerm();
-                if (value > maxValue)
-                {
-                    maxValue = value;
-                    maxIndex = i;
-                }
+                Console.WriteLine($"Прогресія #{i + 1}: {gp[i]}");
             }
 
-            Console.WriteLine($"\nНайбільший останній член у прогресії #{maxIndex + 1}: {maxValue}");
+            int maxIndex = GeometricProgression.GetIndexOfMaxLast(gp);
+            Console.WriteLine($"\nНайбільший останній член у прогресії #{maxIndex + 1}: {gp[maxIndex].LastTerm()}");
 
-            gp = null;
+            for (int i = 0; i < 10; i++)
+            {
+                var obj = new TestClass();
+            }
+
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            Console.WriteLine("\nКінець роботи програми.");
+        }
+
+        static int ReadInt(string prompt, bool allowZero)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                if (int.TryParse(Console.ReadLine(), out int value))
+                {
+                    if (value > 0 || (allowZero && value == 0))
+                        return value;
+                }
+
+                Console.WriteLine(allowZero
+                    ? "Помилка. Введіть число 0 або більше."
+                    : "Помилка. Введіть додатне ціле число.");
+            }
+        }
+
+        static double ReadDouble(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                if (double.TryParse(Console.ReadLine(), out double value))
+                    return value;
+
+                Console.WriteLine("Помилка. Введіть число.");
+            }
         }
     }
 }
+
+}
+
 
