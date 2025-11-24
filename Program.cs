@@ -5,15 +5,16 @@ namespace Lab3
     class TestClass
     {
         private byte[] bigArray = new byte[50 * 1024 * 1024];
+        public static bool Verbose = false;
 
         public TestClass()
         {
-            Console.WriteLine("Створено об'єкт TestClass");
+            if (Verbose) Console.WriteLine("Створено об'єкт TestClass");
         }
 
         ~TestClass()
         {
-            Console.WriteLine("Спрацював деструктор TestClass");
+            if (Verbose) Console.WriteLine("Спрацював деструктор TestClass");
         }
     }
 
@@ -35,7 +36,7 @@ namespace Lab3
 
         ~GeometricProgression()
         {
-            Console.WriteLine("Знищується об'єкт геометричної прогресії");
+            if (TestClass.Verbose) Console.WriteLine("Знищується об'єкт геометричної прогресії");
         }
 
         public double LastTerm()
@@ -98,7 +99,6 @@ namespace Lab3
             int maxIndex = GeometricProgression.GetIndexOfMaxLast(gp);
             Console.WriteLine($"\nНайбільший останній член у прогресії #{maxIndex + 1}: {gp[maxIndex].LastTerm()}");
 
-            Console.WriteLine("\nДемонстрація роботи Garbage Collection:");
             for (int i = 0; i < 10; i++)
             {
                 var obj = new TestClass();
@@ -139,6 +139,8 @@ namespace Lab3
             }
         }
     }
+}
+
 }
 
 
